@@ -12,9 +12,13 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-  origin: 'http://localhost:3000',  // Cambia si usas otra URL frontend
+  origin: [
+    "http://localhost:3000",
+    "https://frontend-dc-evaluacion-pp5p.vercel.app"
+  ],
   credentials: true
 }));
+
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/paciente', pacienteRoutes);
