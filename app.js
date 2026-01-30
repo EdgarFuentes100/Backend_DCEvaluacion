@@ -11,9 +11,12 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+const cors = require('cors');
+
 app.use(cors({
   origin: [
     "http://localhost:3000",
+    "https://frontend-dc-evaluacion.vercel.app",
     "https://frontend-dc-evaluacion-pp5p.vercel.app"
   ],
   credentials: true
