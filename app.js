@@ -11,8 +11,6 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-const cors = require('cors');
-
 app.use(cors({
   origin: [
     "http://localhost:3000",
@@ -25,6 +23,7 @@ app.use(cors({
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/paciente', pacienteRoutes);
+app.use('/api/v1/usuarios', usuariosRoutes);
 
 
 app.listen(4000, () => console.log('Servidor en puerto 4000'));

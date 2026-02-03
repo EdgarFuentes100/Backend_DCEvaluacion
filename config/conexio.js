@@ -1,0 +1,7 @@
+/*DB_LOCAL_HOST=trolley.proxy.rlwy.net
+DB_LOCAL_PORT=55676
+DB_LOCAL_USER=root
+DB_LOCAL_PASSWORD=LRVhuFQZMoXAZoCoYbaWdybqcqyfymmn
+DB_LOCAL_NAME=rrhhDCobranza
+NODE_LOCAL_ENV=development
+LOCAL_PORT=4000*/

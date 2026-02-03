@@ -5,21 +5,41 @@ async function getUsuarioPorPin(pin) {
   const [rows] = await localDB.query(
     `SELECT
         u.idUsuario,
+        u.idRol,
+        u.pinCreadoEn,
+        u.duracionPinMin,
         p.nombreCompleto AS nombre,
-        r.rol AS rol
-    FROM usuario u
-    JOIN persona p ON u.idPersona = p.idPersona
-    JOIN rol r ON u.idRol = r.idRol
-    WHERE u.pinCode = ?
-      AND u.activo = TRUE`,
+        r.rol AS rol,
+        u.idPlantilla,
+        pe.url AS urlPlantilla,
+        NOW() AS fechaServidor,
+        DATE_ADD(u.pinCreadoEn, INTERVAL u.duracionPinMin MINUTE) AS pinVenceEn
+     FROM usuario u
+     JOIN persona p ON u.idPersona = p.idPersona
+     JOIN rol r ON u.idRol = r.idRol
+     LEFT JOIN plantilla_excel pe 
+        ON u.idPlantilla = pe.idplantilla_excel
+     WHERE u.pinCode = ?
+       AND u.activo = TRUE`,
     [pin]
   );
-    console.log(`Resultados encontrados: ${rows.length}`);
-  if (rows.length > 0) {
-    console.log('Usuario encontrado:', rows[0]);
+
+  if (rows.length === 0) return null;
+
+  const u = rows[0];
+
+  if (u.idRol === 1) {
+    return u;
   }
-  
-  return rows.length > 0 ? rows[0] : null;
+
+  const ahora = new Date(u.fechaServidor);
+  const vence = new Date(u.pinVenceEn);
+
+  if (ahora > vence) {
+    return null;
+  }
+
+  return u;
 }
 
 module.exports = {

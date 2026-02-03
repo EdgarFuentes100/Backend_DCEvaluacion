@@ -12,7 +12,9 @@ async function loginUser(req, res) {
     const token = jwt.sign({
       id: usuario.idUsuario,
       nombre: usuario.nombre,
-      rol: usuario.rol
+      rol: usuario.rol,
+      urlPlantilla: usuario.urlPlantilla
+
     }, SECRET_KEY, { expiresIn: '1h' });
 
     // Enviar token en cookie httpOnly
