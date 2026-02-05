@@ -2,10 +2,10 @@ const { localDB } = require('../config/db');
 
 async function getUsuarios() {
   const [rows] = await localDB.query(`
-    
     SELECT 
       u.idUsuario,
       u.activo,
+      u.idplantilla_excel,
       r.idRol,
       r.rol,
       u.pinCode,
@@ -27,7 +27,8 @@ async function crearUsuario(data) {
     dui,
     idRol,
     pinCode,
-    duracionPinMin
+    duracionPinMin,
+    idplantilla_excel
   } = data;
 
   const conn = await localDB.getConnection();
@@ -35,21 +36,27 @@ async function crearUsuario(data) {
   try {
     await conn.beginTransaction();
 
-    // 1. crear persona
-    const [persona] = await conn.query(`
-      INSERT INTO persona (nombreCompleto, dui)
-      VALUES (?, ?)
-    `, [nombreCompleto, dui]);
+    // 1. persona
+    const [persona] = await conn.query(
+      `INSERT INTO persona (nombreCompleto, dui) VALUES (?, ?)`,
+      [nombreCompleto, dui]
+    );
 
-    // 2. crear usuario
+    // 2. usuario (AQUÍ SE INSERTA LA PLANTILLA)
     const [usuario] = await conn.query(`
       INSERT INTO usuario (
-        idPersona, idRol, pinCode, duracionPinMin, pinCreadoEn, activo
-      )
-      VALUES (?, ?, ?, ?, NOW(), 1)
+        idPersona,
+        idRol,
+        idplantilla_excel,
+        pinCode,
+        duracionPinMin,
+        pinCreadoEn,
+        activo
+      ) VALUES (?, ?, ?, ?, ?, NOW(), 1)
     `, [
       persona.insertId,
       idRol,
+      idplantilla_excel || null,
       pinCode,
       duracionPinMin
     ]);
@@ -61,9 +68,9 @@ async function crearUsuario(data) {
       idPersona: persona.insertId
     };
 
-  } catch (error) {
+  } catch (err) {
     await conn.rollback();
-    throw error;
+    throw err;
   } finally {
     conn.release();
   }
@@ -74,7 +81,9 @@ async function actualizarUsuario(idUsuario, data) {
     nombreCompleto,
     dui,
     idRol,
-    activo
+    activo,
+    duracionPinMin,
+    idplantilla_excel
   } = data;
 
   const conn = await localDB.getConnection();
@@ -83,28 +92,38 @@ async function actualizarUsuario(idUsuario, data) {
     await conn.beginTransaction();
 
     const [[usuario]] = await conn.query(
-      'SELECT idPersona FROM usuario WHERE idUsuario = ?',
+      `SELECT idPersona FROM usuario WHERE idUsuario = ?`,
       [idUsuario]
     );
 
     if (!usuario) throw new Error('Usuario no existe');
 
-    // actualizar persona
+    // persona
     await conn.query(`
       UPDATE persona
       SET nombreCompleto=?, dui=?
       WHERE idPersona=?
     `, [nombreCompleto, dui, usuario.idPersona]);
 
-    // actualizar usuario
+    // usuario (SE ACTUALIZA PLANTILLA Y MINUTOS)
     await conn.query(`
       UPDATE usuario
-      SET idRol=?, activo=?
+      SET 
+        idRol=?,
+        activo=?,
+        duracionPinMin=?,
+        idplantilla_excel=?
       WHERE idUsuario=?
-    `, [idRol, activo, idUsuario]);
+    `, [
+      idRol,
+      activo,
+      duracionPinMin,
+      idplantilla_excel || null,
+      idUsuario
+    ]);
 
     await conn.commit();
-    return getUsuarioById(idUsuario);
+    return true;
 
   } catch (err) {
     await conn.rollback();
@@ -121,14 +140,14 @@ async function eliminarUsuario(idUsuario) {
     await conn.beginTransaction();
 
     const [[usuario]] = await conn.query(
-      'SELECT idPersona FROM usuario WHERE idUsuario = ?',
+      `SELECT idPersona FROM usuario WHERE idUsuario = ?`,
       [idUsuario]
     );
 
     if (!usuario) throw new Error('Usuario no existe');
 
-    await conn.query('DELETE FROM usuario WHERE idUsuario=?', [idUsuario]);
-    await conn.query('DELETE FROM persona WHERE idPersona=?', [usuario.idPersona]);
+    await conn.query(`DELETE FROM usuario WHERE idUsuario=?`, [idUsuario]);
+    await conn.query(`DELETE FROM persona WHERE idPersona=?`, [usuario.idPersona]);
 
     await conn.commit();
     return true;

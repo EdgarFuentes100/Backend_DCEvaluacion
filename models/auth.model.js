@@ -10,7 +10,7 @@ async function getUsuarioPorPin(pin) {
         u.duracionPinMin,
         p.nombreCompleto AS nombre,
         r.rol AS rol,
-        u.idPlantilla,
+        u.idplantilla_excel,
         pe.url AS urlPlantilla,
         NOW() AS fechaServidor,
         DATE_ADD(u.pinCreadoEn, INTERVAL u.duracionPinMin MINUTE) AS pinVenceEn
@@ -18,7 +18,7 @@ async function getUsuarioPorPin(pin) {
      JOIN persona p ON u.idPersona = p.idPersona
      JOIN rol r ON u.idRol = r.idRol
      LEFT JOIN plantilla_excel pe 
-        ON u.idPlantilla = pe.idplantilla_excel
+        ON u.idplantilla_excel = pe.idplantilla_excel
      WHERE u.pinCode = ?
        AND u.activo = TRUE`,
     [pin]
