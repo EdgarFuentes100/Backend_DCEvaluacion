@@ -21,7 +21,7 @@ async function loginUser(req, res) {
     res.cookie('token', token, {
       httpOnly: true,
       maxAge: 3600000, // 1 hora
-      sameSite: 'lax',  // protege contra CSRF
+      sameSite: 'none',  // protege contra CSRF
       secure: true     // true en producción con HTTPS
     });
 
