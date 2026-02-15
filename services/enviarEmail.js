@@ -2,16 +2,14 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
+ host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASS
-  },
-  family: 4 
+    user: 'edgarfuentes139@gmail.com',
+    pass: 'nmkt wotz rkxs panf'
+  }
 });
-
 /**
  * Enviar email con adjuntos
  * @param {string} to - destinatario
