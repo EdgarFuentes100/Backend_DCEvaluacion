@@ -1,33 +1,30 @@
 // services/enviarEmail.js
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-const transporter = nodemailer.createTransport({
- host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: 'edgarfuentes139@gmail.com',
-    pass: 'nmkt wotz rkxs panf'
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 /**
  * Enviar email con adjuntos
- * @param {string} to - destinatario
- * @param {string} subject - asunto
- * @param {string} text - mensaje
+ * @param {string} to
+ * @param {string} subject
+ * @param {string} text
  * @param {Array} archivos - [{ filename, content }]
  */
 async function enviarEmail({ to, subject, text, archivos }) {
-  const info = await transporter.sendMail({
-    from: process.env.GMAIL_USER,
+  console.log("📤 Enviando email con Resend...");
+
+  const response = await resend.emails.send({
+    from: "onboarding@resend.dev", // temporal
     to,
     subject,
     text,
-    attachments: archivos
+    attachments: archivos?.map(file => ({
+      filename: file.filename,
+      content: file.content.toString("base64")
+    }))
   });
 
-  console.log("Correo enviado:", info.messageId);
-  return info;
+  console.log("✅ Email enviado:", response);
+  return response;
 }
 
 module.exports = { enviarEmail };
