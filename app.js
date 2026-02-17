@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+const ping = require("./routes/ping.routes");
 const authRoutes = require('./routes/auth.routes');
 const usuariosRoutes = require('./routes/usuarios.routes');
 const plantillaRoutes = require('./routes/plantilla.routes');
@@ -23,6 +24,7 @@ app.use(cors({
 }));
 
 
+app.use('/api/v1/ping', ping);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/usuarios', usuariosRoutes);
 app.use('/api/v1/plantilla', plantillaRoutes);
