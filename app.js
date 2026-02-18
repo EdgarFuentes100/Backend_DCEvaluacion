@@ -8,6 +8,7 @@ const usuariosRoutes = require('./routes/usuarios.routes');
 const plantillaRoutes = require('./routes/plantilla.routes');
 const driveRoutes = require("./routes/driveRoutes");
 const emailRoutes = require("./routes/email.routes");
+const pregunatRoutes = require("./routes/pregunta.routes");
 
 const app = express();
 
@@ -30,5 +31,6 @@ app.use('/api/v1/usuarios', usuariosRoutes);
 app.use('/api/v1/plantilla', plantillaRoutes);
 app.use("/api/v1/drive", driveRoutes);
 app.use("/api/v1/email", emailRoutes);
+app.use("/api/v1/preguntas", pregunatRoutes);
 
 app.listen(4000, () => console.log('Servidor en puerto 4000'));
