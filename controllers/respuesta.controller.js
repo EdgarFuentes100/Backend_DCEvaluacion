@@ -6,7 +6,7 @@ async function listarPorIntento(req, res, next) {
   try {
     const { idIntento } = req.params;
 
-    const respuestas = await Respuesta.obtenerRespuestasPorIntento(idIntento);
+    const respuestas = await Respuesta.obtenerPorIntento(idIntento);
 
     res.json({
       ok: true,
@@ -19,19 +19,24 @@ async function listarPorIntento(req, res, next) {
 }
 
 
-// 🔹 Guardar respuesta
+// 🔹 Guardar o actualizar respuesta (UPSERT)
 async function guardar(req, res, next) {
   try {
-    const { idIntento, idPregunta, valor, textoRespuesta } = req.body;
+    const { idIntento, idPregunta, respuesta } = req.body;
 
-    await Respuesta.guardarRespuesta(
-      idIntento,
-      idPregunta,
-      valor,
-      textoRespuesta
-    );
+    if (!idIntento || !idPregunta || respuesta === undefined) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Datos incompletos"
+      });
+    }
 
-    res.json({ ok: true });
+    await Respuesta.guardar(idIntento, idPregunta, respuesta);
+
+    res.json({
+      ok: true,
+      msg: "Respuesta guardada correctamente"
+    });
 
   } catch (error) {
     next(error);

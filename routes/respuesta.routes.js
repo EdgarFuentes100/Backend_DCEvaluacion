@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const respuestaController = require("../controllers/respuesta.controller");
 
-// GET respuestas de un intento
-router.get("/:idIntento", respuestaController.listarPorIntento);
+const {
+  listarPorIntento,
+  guardar
+} = require("../controllers/respuesta.controller");
 
-// POST guardar respuesta
-router.post("/", respuestaController.guardar);
+router.get("/:idIntento", listarPorIntento);
+router.post("/", guardar);
+
 
 module.exports = router;
