@@ -45,9 +45,15 @@ async function finalizarIntento(idIntento) {
   `, [idIntento]);
 }
 
+async function borrar() {
+  await localDB.query(`
+    DELETE FROM intentos
+  `);
+}
 module.exports = {
   obtenerIntentoActivo,
   contarIntentos,
   crearIntento,
-  finalizarIntento
+  finalizarIntento,
+  borrar
 };

@@ -52,7 +52,19 @@ async function finalizarIntento(req, res, next) {
   }
 }
 
+async function borrar(req, res, next) {
+  try {
+    await Intento.borrar();
+
+    res.json({ ok: true });
+
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   iniciarIntento,
-  finalizarIntento
+  finalizarIntento,
+  borrar
 };

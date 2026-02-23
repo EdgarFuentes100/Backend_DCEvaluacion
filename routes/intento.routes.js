@@ -4,5 +4,6 @@ const intentoController = require("../controllers/intento.controller");
 
 router.post("/", intentoController.iniciarIntento);
 router.put("/finalizar/:idIntento", intentoController.finalizarIntento);
+router.delete("/delete", intentoController.borrar);
 
 module.exports = router;
