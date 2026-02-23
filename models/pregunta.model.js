@@ -4,7 +4,9 @@ async function obtenerPreguntasPorPrueba(idPrueba) {
   const [rows] = await localDB.query(`
     SELECT 
       idPregunta,
-      pregunta
+      pregunta,
+      pesoImportancia,
+      maximo
     FROM preguntas
     WHERE idPrueba = ?
   `, [idPrueba]);

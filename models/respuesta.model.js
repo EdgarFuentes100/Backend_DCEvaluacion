@@ -7,7 +7,9 @@ async function obtenerPorIntento(idIntento) {
     SELECT 
       idRespuesta,
       idPregunta,
-      respuesta
+      respuesta,
+      peso, 
+      porcentaje
     FROM respuestas
     WHERE idIntento = ?
   `, [idIntento]);
@@ -16,14 +18,15 @@ async function obtenerPorIntento(idIntento) {
 }
 
 
-// 🔹 Insertar o actualizar (UPSERT)
-async function guardar(idIntento, idPregunta, respuesta) {
+async function guardar(idIntento, idPregunta, respuesta, peso, porcentaje) {
   await localDB.query(`
-    INSERT INTO respuestas (idIntento, idPregunta, respuesta)
-    VALUES (?, ?, ?)
+    INSERT INTO respuestas (idIntento, idPregunta, respuesta, peso, porcentaje)
+    VALUES (?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
-      respuesta = VALUES(respuesta)
-  `, [idIntento, idPregunta, respuesta]);
+      respuesta = VALUES(respuesta),
+      peso = VALUES(peso),
+      porcentaje = VALUES(porcentaje)
+  `, [idIntento, idPregunta, respuesta, peso, porcentaje]);  // ✅ Ahora pasas los 5 valores
 }
 
 module.exports = {
