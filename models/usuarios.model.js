@@ -36,13 +36,14 @@ async function crearUsuario(data) {
   try {
     await conn.beginTransaction();
 
-    // 1. persona
+    // 1️⃣ Insertar persona
     const [persona] = await conn.query(
       `INSERT INTO persona (nombreCompleto, dui) VALUES (?, ?)`,
       [nombreCompleto, dui]
     );
+    console.log("✅ Persona insertada:", { idPersona: persona.insertId, nombreCompleto, dui });
 
-    // 2. usuario (AQUÍ SE INSERTA LA PLANTILLA)
+    // 2️⃣ Insertar usuario
     const [usuario] = await conn.query(`
       INSERT INTO usuario (
         idPersona,
@@ -60,8 +61,26 @@ async function crearUsuario(data) {
       pinCode,
       duracionPinMin
     ]);
+    console.log("✅ Usuario insertado:", { idUsuario: usuario.insertId, idRol, pinCode, duracionPinMin, idplantilla_excel });
 
+    // 3️⃣ Insertar resultado si el rol es 2
+    if (Number(idRol) === 2) {
+      const [resultado] = await conn.query(`
+        INSERT INTO resultado (
+          idUsuario,
+          prueba1,
+          prueba2,
+          prueba3,
+          aprobado,
+          motivo
+        ) VALUES (?, NULL, NULL, NULL, NULL, NULL)
+      `, [usuario.insertId]);
+      console.log("✅ Resultado creado para usuario con rol 2:", { idUsuario: usuario.insertId, aprobado: 0 });
+    }
+
+    // 4️⃣ Commit con log final
     await conn.commit();
+    console.log("🎉 Transacción commit completado:", { idPersona: persona.insertId, idUsuario: usuario.insertId });
 
     return {
       idUsuario: usuario.insertId,
@@ -70,12 +89,12 @@ async function crearUsuario(data) {
 
   } catch (err) {
     await conn.rollback();
+    console.error("❌ Transacción fallida, rollback realizado", err);
     throw err;
   } finally {
     conn.release();
   }
 }
-
 async function actualizarUsuario(idUsuario, data) {
   const {
     nombreCompleto,

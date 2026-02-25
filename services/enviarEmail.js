@@ -10,22 +10,22 @@ const resend = new Resend(process.env.RESEND_API_KEY);
  * @param {Array<{ filename: string, content: Buffer }>} archivos
  */
 async function enviarEmail({ to, subject, text, archivos = [] }) {
-  console.log("📤 Enviando email con Resend...");
+  // console.log("📤 Enviando email con Resend...");
 
   const response = await resend.emails.send({
-    from: "onboarding@resend.dev", // temporal
+    from: "Drok@resend.dev",
     to,
     subject,
     text,
     attachments: archivos.length
       ? archivos.map(file => ({
-          filename: file.filename,
-          content: file.content.toString("base64")
-        }))
+        filename: file.filename,
+        content: file.content.toString("base64")
+      }))
       : undefined
   });
 
-  console.log("✅ Email enviado:", response);
+  //console.log("✅ Email enviado:", response);
   return response;
 }
 

@@ -11,6 +11,8 @@ const emailRoutes = require("./routes/email.routes");
 const pregunatRoutes = require("./routes/pregunta.routes");
 const intentoRoutes = require("./routes/intento.routes");
 const respuestaRoutes = require("./routes/respuesta.routes");
+const resultadoRoutes = require("./routes/resultado.routes");
+const habilidadRoutes = require("./routes/habilidadCategoria.routes");
 
 const app = express();
 
@@ -36,5 +38,7 @@ app.use("/api/v1/email", emailRoutes);
 app.use("/api/v1/preguntas", pregunatRoutes);
 app.use("/api/v1/intento", intentoRoutes);
 app.use("/api/v1/respuestas", respuestaRoutes);
+app.use("/api/v1/resultados", resultadoRoutes);
+app.use("/api/v1/habilidad", habilidadRoutes);
 
 app.listen(4000, () => console.log('Servidor en puerto 4000'));
