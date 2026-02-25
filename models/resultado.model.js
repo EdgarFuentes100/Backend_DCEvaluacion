@@ -67,8 +67,25 @@ async function actualizarPrueba3(idUsuario) {
   return result;
 }
 
+async function actualizarPrueba1(idUsuario, data) {
+  const {
+    prueba1
+  } = data;
+
+  const [result] = await localDB.query(`
+    UPDATE resultado
+    SET 
+      prueba1 = ?
+    WHERE idUsuario = ?
+  `, [prueba1, idUsuario]);
+
+  return result;
+}
+
+
 module.exports = {
   getResultados,
   actualizarResultado,
-  actualizarPrueba3
+  actualizarPrueba3,
+  actualizarPrueba1
 };

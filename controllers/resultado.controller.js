@@ -21,7 +21,6 @@ async function actualizar(req, res, next) {
   }
 }
 
-
 async function actualizarPrueba3(req, res, next) {
   try {
     await Resultados.actualizarPrueba3(req.params.id);
@@ -31,9 +30,18 @@ async function actualizarPrueba3(req, res, next) {
   }
 }
 
+async function actualizarPrueba1(req, res, next) {
+  try {
+    await Resultados.actualizarPrueba1(req.params.id, req.body);
+    res.json({ ok: true });
+  } catch (err) { 
+    next(err); 
+  }
+}
 
 module.exports = {
   listar,
   actualizar,
-  actualizarPrueba3
+  actualizarPrueba3,
+  actualizarPrueba1
 };
