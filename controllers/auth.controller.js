@@ -15,12 +15,12 @@ async function loginUser(req, res) {
       rol: usuario.rol,
       urlPlantilla: usuario.urlPlantilla
 
-    }, SECRET_KEY, { expiresIn: '1h' });
+    }, SECRET_KEY, { expiresIn: '3h' });
 
     // Enviar token en cookie httpOnly
     res.cookie('token', token, {
       httpOnly: true,
-      maxAge: 3600000, // 1 hora
+      maxAge: 10800000, // 1 hora
       sameSite: 'none',  // protege contra CSRF
       secure: true     // true en producción con HTTPS
     });
